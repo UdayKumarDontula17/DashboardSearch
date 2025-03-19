@@ -93,4 +93,5 @@ return function (RouteBuilder $routes): void {
      * });
      * ```
      */
+    $routes->get('/posts', ['controller' => 'Posts', 'action' => 'index']);
 };
