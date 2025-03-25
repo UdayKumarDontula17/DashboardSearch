@@ -26,6 +26,8 @@ class PostsController extends AppController
     public function index()
     {
         $searchTerm = $this->request->getQuery('search', '');
+        $page = (int)$this->request->getQuery('page', 1);
+        $limit = (int)$this->request->getQuery('limit', 10);
         
             $http = new Client();
             $response = $http->get('https://jsonplaceholder.typicode.com/posts');
@@ -46,6 +48,12 @@ class PostsController extends AppController
             });
         }
         
-        $this->set(compact('posts', 'searchTerm'));
+        $totalPosts = count($posts);
+        $totalPages = ceil($totalPosts / $limit);
+        $page = max(1, min($page, $totalPages));
+        $offset = ($page - 1) * $limit;
+        $paginatedPosts = array_slice($posts, $offset, $limit);
+
+        $this->set(compact('paginatedPosts', 'searchTerm', 'page', 'limit', 'totalPosts', 'totalPages'));
     }
 }
